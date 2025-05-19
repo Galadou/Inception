@@ -8,7 +8,6 @@ RUN openssl req -x509 -nodes -out /etc/nginx/ssl/certificate.crt -keyout /etc/ng
 #ON CREE LES DIRECTORY NECESSAIRE ET ON COPY LA CONFIG
 RUN mkdir -p /var/run/nginx
 COPY ./conf/nginx.conf /etc/nginx/conf.d
-#!Pourquoi avoir un dossier conf pour nginx ? on peux pas mettre le fichier .conf directement ici ?
 
 #ON SET LE PORT
 EXPOSE 443

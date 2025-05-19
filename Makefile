@@ -1,0 +1,1 @@
+docker compose up = lancer le script docker compose yml
