@@ -1,5 +1,6 @@
 FROM debian:bullseye
-# run ???
+
+RUN apt update -y && apt upgrade -y && apt install -y nginx openssl
 
 #SETUP SSL KEY  #! ? qui nous a dis de faire ca ???
 RUN mkdir -p /etc/nginx/ssl
