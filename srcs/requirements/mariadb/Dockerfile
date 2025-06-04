@@ -1,20 +1,15 @@
 FROM debian:bullseye
 
-RUN apt update -y && apt upgrade -y && apt install -y mariadb-server mariadb-client gettext-base
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y mariadb-server && \
+    rm -rf /var/lib/apt/lists/*
 
-#EXPOSE PORT 3306 LIKE SUBJECT ASK AND COPY MARIADB CONFIG
-EXPOSE 3306
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY tools/mariadb.sh /mariadb.sh
 
+RUN chmod +x /mariadb.sh
 
-RUN mkdir ./entrypoint-initdb.d
-COPY ./tools/init.sql.template /entrypoint-initdb.d
-RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
+USER root
 
+ENTRYPOINT ["/mariadb.sh"]
 
-#COPY ENTRYPOINT AND ADD EXECUTION PERMISSIONS
-COPY ./tools/entrypoint.sh ./
-RUN chmod +x entrypoint.sh
-
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["mysqld"]

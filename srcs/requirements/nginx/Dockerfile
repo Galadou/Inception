@@ -1,17 +1,20 @@
 FROM debian:bullseye
 
-RUN apt update -y && apt upgrade -y && apt install -y nginx openssl
+RUN apt update -y && apt upgrade -y && \
+    apt install -y nginx vim openssl && \
+    mkdir -p /etc/nginx/ssl
 
-#SETUP SSL KEY  #! ? qui nous a dis de faire ca ???
-RUN mkdir -p /etc/nginx/ssl
-RUN openssl req -x509 -nodes -out /etc/nginx/ssl/certificate.crt -keyout /etc/nginx/ssl/certificate.key -subj "/C=FR/ST=NA/L=Angouleme/O=42/OU=42/CN=$DOMAIN_NAME/UID=gala"
+RUN openssl req -x509 -nodes \
+    -out /etc/nginx/ssl/inception.crt \
+    -keyout /etc/nginx/ssl/inception.key \
+    -subj "/C=FR/ST=NA/L=Angouleme/O=42/OU=42/CN=gmersch.42.fr/UID=gmersch"
 
-#ON CREE LES DIRECTORY NECESSAIRE ET ON COPY LA CONFIG
-RUN mkdir -p /var/run/nginx
-COPY ./conf/nginx.conf /etc/nginx/conf.d
+RUN mkdir -p /var/run/nginx /var/www/html
 
-#ON SET LE PORT
-EXPOSE 443
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-#ON LANCE NGINX (-g pour edit le main file config, et daemon off pour autorisee nginx a run en arriere plan)
+RUN chmod -R 755 /var/www/html && \
+    chown -R www-data:www-data /var/www/html
+
 CMD ["nginx", "-g", "daemon off;"]
+
